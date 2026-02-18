@@ -3,233 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Corazón</title>
+    <title>Mi Saludo Cordial</title>
     <style>
-        /* --- Configuración General --- */
+        /* Aquí va el CSS */
         body {
-            margin: 0;
-            height: 100vh;
+            background-color: #f0f2f5;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to bottom, #1a1a2e, #16213e); /* Fondo oscuro elegante */
+            height: 100vh;
+            margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Evitar scrollbars cuando broten los corazones */
         }
 
-        /* --- El Contenedor Principal --- */
-        .container {
-            text-align: center;
-            position: relative;
-            z-index: 10; /* Asegurar que esté por encima de los corazones pequeños */
-        }
-
-        /* --- El Corazón Principal (CSS Puro) --- */
-        .main-heart-container {
-            position: relative;
-            width: 100px;
-            height: 90px;
-            margin: 0 auto 30px; /* Centrado y margen inferior */
-        }
-
-        .main-heart {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Color inicial apagado/oscuro */
-            background-color: #7f2a3c; 
-            transform: rotate(-45deg);
-            transition: background-color 0.8s ease, transform 0.5s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .main-heart::before,
-        .main-heart::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: inherit; /* Hereda el color del padre */
-            border-radius: 50%;
-        }
-
-        .main-heart::before { top: -50%; left: 0; }
-        .main-heart::after { top: 0; left: 50%; }
-
-        /* Clase que se añade al activar: Color vivo y animación de latido */
-        .main-heart.alive {
-            background-color: #ff3366; /* Rojo vibrante */
-            box-shadow: 0 0 30px rgba(255, 51, 102, 0.6);
-            animation: heartbeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-        }
-
-        @keyframes heartbeat {
-            0% { transform: rotate(-45deg) scale(1); }
-            15% { transform: rotate(-45deg) scale(1.15); }
-            30% { transform: rotate(-45deg) scale(1); }
-            45% { transform: rotate(-45deg) scale(1.1); }
-            60% { transform: rotate(-45deg) scale(1); }
-        }
-
-        /* --- Textos --- */
         h1 {
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 300;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            transition: color 0.5s ease;
-            min-height: 1.2em; /* Evitar salto cuando cambia el texto */
-        }
-        h1.alive-text {
-            color: #ff85a8; /* Color más alegre al activarse */
-            font-weight: bold;
+            color: #2c3e50;
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
 
-        /* --- Botón --- */
-        button {
-            padding: 12px 28px;
-            font-size: 1rem;
-            background-color: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-        button:hover {
-            background-color: rgba(255, 51, 102, 0.2);
-            border-color: #ff3366;
-        }
-        button.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.8);
-        }
-
-        /* --- Pequeños Corazones que Brotan --- */
-        .small-heart {
-            position: absolute;
-            /* Se posicionarán en el centro con JS */
-            width: 20px;
-            height: 20px;
-            background-color: #ff3366;
-            transform: rotate(-45deg);
-            pointer-events: none; /* Que no interfieran con el mouse */
-            z-index: 1; /* Detrás del contenedor principal */
-        }
-        .small-heart::before, .small-heart::after {
-            content: ""; position: absolute; width: 100%; height: 100%;
-            background-color: inherit; border-radius: 50%;
-        }
-        .small-heart::before { top: -50%; left: 0; }
-        .small-heart::after { top: 0; left: 50%; }
-
-        /* Animación de "brote" */
-        @keyframes burstOut {
-            0% {
-                transform: translate(-50%, -50%) rotate(-45deg) scale(0.2);
-                opacity: 1;
-            }
-            100% {
-                /* Las variables --tx y --ty se definen en JS para dirección aleatoria */
-                transform: translate(var(--tx), var(--ty)) rotate(-45deg) scale(1.5);
-                opacity: 0;
-            }
+        h1:hover {
+            transform: scale(1.1);
+            color: #3498db;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="main-heart-container">
-            <div id="mainHeart" class="main-heart"></div>
-        </div>
-        <h1 id="message">Mi corazón sin ti...</h1>
-        <button id="activateBtn">Darme cariño</button>
-    </div>
-
-    <script>
-        const mainHeart = document.getElementById('mainHeart');
-        const message = document.getElementById('message');
-        const btn = document.getElementById('activateBtn');
-        let isAnimating = false;
-
-        // Función para crear un pequeño corazón
-        function spawnSmallHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('small-heart');
-            
-            // Posicionarlos en el centro de la pantalla inicialmente
-            heart.style.left = '50%';
-            heart.style.top = '50%';
-
-            // Calcular una dirección aleatoria para que salgan disparados
-            // Usamos un ángulo aleatorio y una distancia
-            const angle = Math.random() * Math.PI * 2; // Ángulo completo (0 a 360 grados en radianes)
-            const distance = 150 + Math.random() * 300; // Distancia entre 150px y 450px
-            
-            // Calcular destino final (trigonometría básica)
-            const destinationX = Math.cos(angle) * distance + 'px';
-            const destinationY = Math.sin(angle) * distance + 'px';
-
-            // Asignar variables CSS personalizadas para la animación
-            heart.style.setProperty('--tx', destinationX);
-            heart.style.setProperty('--ty', destinationY);
-
-            // Color aleatorio entre rojo y rosa
-            const hue = 340 + Math.random() * 20; // Entre 340 (rojo) y 360 (rosa fuerte)
-            heart.style.backgroundColor = `hsl(${hue}, 90%, 60%)`;
-
-            // Asignar la animación
-            const duration = 1.5 + Math.random() * 1; // Duración entre 1.5s y 2.5s
-            heart.style.animation = `burstOut ${duration}s ease-out forwards`;
-
-            document.body.appendChild(heart);
-
-            // Limpieza: eliminar el elemento del DOM cuando termine la animación
-            setTimeout(() => {
-                heart.remove();
-            }, duration * 1000);
-        }
-
-
-        // Evento del botón
-        btn.addEventListener('click', () => {
-            if (isAnimating) return; // Evitar doble clic
-            isAnimating = true;
-
-            // 1. Cambiar el estado del corazón principal
-            mainHeart.classList.add('alive');
-
-            // 2. Cambiar el mensaje
-            message.innerText = "¡♥ Mi corazón contigo ♥!";
-            message.classList.add('alive-text');
-
-            // 3. Ocultar el botón suavemente
-            btn.classList.add('hidden');
-
-            // 4. Iniciar el brote de corazones pequeños
-            // Lanzamos una ráfaga rápida inicial
-            let burstCount = 0;
-            const initialBurst = setInterval(() => {
-                spawnSmallHeart();
-                burstCount++;
-                if (burstCount > 30) clearInterval(initialBurst); // Parar la ráfaga inicial
-            }, 50); // Un corazón cada 50ms
-
-            // Luego, mantener un flujo constante más suave
-            setTimeout(() => {
-                setInterval(() => {
-                    if (document.hidden) return; // No generar si la pestaña no está activa
-                    spawnSmallHeart();
-                }, 300); // Un corazón cada 300ms indefinidamente
-            }, 1500);
-        });
-    </script>
+    <h1>🎉 !Que hoy sea un bonito dia para ti¡ 🎉</h1>
 
 </body>
 </html>
