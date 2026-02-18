@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Saludo Cordial</title>
+    <title>Mi Saludo Celebratorio</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
-        /* Aquí va el CSS */
         body {
             background-color: #f0f2f5;
             display: flex;
@@ -14,6 +15,7 @@
             height: 100vh;
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Evita que aparezcan barras de scroll con la animación */
         }
 
         h1 {
@@ -22,18 +24,36 @@
             padding: 20px 40px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer; /* Cambia el cursor para indicar que se puede hacer clic */
+            user-select: none; /* Evita que se seleccione el texto al hacer muchos clics */
         }
 
         h1:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             color: #3498db;
+        }
+
+        h1:active {
+            transform: scale(0.95); /* Efecto de "botón presionado" */
         }
     </style>
 </head>
 <body>
 
-    <h1>🎉 !Que hoy sea un bonito dia para ti¡ 🎉</h1>
+    <h1 onclick="lanzarCelebracion()">🎉 ¡Que hoy sea un bonito día para ti! 🎉</h1>
+
+    <script>
+        function lanzarCelebracion() {
+            // Configuración del confeti
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#3498db', '#f1c40f', '#e74c3c', '#2ecc71', '#9b59b6']
+            });
+        }
+    </script>
 
 </body>
 </html>
